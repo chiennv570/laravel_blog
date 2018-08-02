@@ -98,10 +98,14 @@ Route::group(['prefix' => 'thuc-don'], function () {
 
 View::share('title', 'Lap trinh Laravel 5x'); // share bien tat ca cac view deu nhan duoc bien title
 
+
+//share bien cho view info.infomation
 View::composer('info.infomation', function ($view) {
     return $view->with('thongtin', 'Day la trang ca nhan1');
 });
 
+
+//share bien cho view info.infomatiion and welcome
 //View::composer(['info.infomation', 'welcome'], function ($view) {
 //    return $view->with('thongtin', 'Day la trang ca nhan');
 //});
@@ -115,5 +119,112 @@ Route::get('check-view', function () {
 });
 
 Route::get('goi-view', function () {
-    return view('layout.layout');
+    return view('layout.master');
+});
+
+// get url
+Route::get('url/full', function () {
+    return URL::full();
+});
+
+// get url asset
+Route::get('url/asset', function () {
+    //return URL::asset('css/mystyle.css', true);  // => https://laravel.local/css/mystyle.css (la https)
+    //return URL::asset('css/mystyle.css'); // => http://laravel.local/css/mystyle.css (la http)
+
+    // URL::asset la Laravel4 con asset la Laravel5
+    return asset('css/mystyle.css');
+});
+
+Route::get('url/to', function () {
+//    return URL::to('test', [
+//        'chien', 'diachi11'
+//    ]);
+    return URL::to('test', [
+        'chien',
+        'diachi11'
+    ], true);  // => https://laravel.local/test/chien/diachi11 (https)
+});
+
+Route::get('/thongtin/{name}/chien123/{diachi}', function ($name, $diachi1) {
+    return "Name: $name, Dia chi: $diachi1";
+});
+
+Route::get('url/secure', function () {
+    // se tra ve https luon ko can them true cuoi
+    return secure_url('thong-tin', ['chien', '12344423']);  // => https://laravel.local/thong-tin/chien/12344423
+});
+
+
+// create table khoapham
+Route::get('schema/create', function () {
+    Schema::create('khoapham', function ($table) {
+        $table->increments('id');
+        $table->string('tenmonhoc');
+        $table->integer('gia');
+        $table->text('ghichu')->nullable();
+        $table->timestamps();
+    });
+});
+
+
+// rename table khoapham => kpt
+Route::get('schema/rename', function () {
+    Schema::rename('khoapham', 'kpt');
+});
+
+// drop table
+Route::get('schema/drop', function () {
+    Schema::drop('kpt');
+});
+
+// drop table check exist
+Route::get('schema/drop-exists', function () {
+    Schema::dropIfExists('khoapham');
+});
+
+
+// change attr column
+Route::get('schema/change-col-attr', function () {
+    Schema::table('khoapham', function ($table) {
+        $table->string('tenmonhoc', 50)->change();
+    });
+});
+
+
+// delete column
+Route::get('schema/drop-col', function () {
+    Schema::table('khoapham', function ($table) {
+        $table->dropColumn('ghichu');
+        $table->string('test');
+    });
+});
+
+// delete multi column
+Route::get('schema/drop-multi-col', function () {
+    Schema::table('khoapham', function ($table) {
+        $table->dropColumn(['test', 'gia']);
+    });
+});
+
+
+// relation (khoa ngoai)
+Route::get('schema/create/cate', function () {
+    Schema::create('category', function ($table) {
+        $table->increments('id');
+        $table->string('name', 100);
+        $table->timestamps();
+    });
+});
+
+
+Route::get('schema/create/product', function () {
+    Schema::create('product', function ($table) {
+        $table->increments('id');
+        $table->string('name');
+        $table->integer('price');
+        $table->integer('cate_id')->unsigned();
+        $table->foreign('cate_id')->references('id')->on('category')->onDelete('cascade');
+        $table->timestamps();
+    });
 });

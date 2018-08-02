@@ -7,33 +7,7 @@
     <title>Lap trinh Laravel - @yield('title')</title>
     <!-- Fonts -->
     <link href="https://fonts.googleapis.com/css?family=Raleway:100,600" rel="stylesheet" type="text/css">
-
-    <!-- Styles -->
-    <style>
-        #wrapper {
-            width: 980px;
-            height: auto;
-            margin: 0px auto;
-        }
-
-        #header {
-            width: auto;
-            height: 200px;
-            background: red;
-        }
-
-        #content {
-            width: auto;
-            height: 500px;
-            background: blue;
-        }
-
-        #footer {
-            width: auto;
-            height: 100px;
-            background: green;
-        }
-    </style>
+    <link href="{{ asset('template/css/mystyle.css') }}" rel="stylesheet">
 </head>
 <body>
 <div id="wrapper">
