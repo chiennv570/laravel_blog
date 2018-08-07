@@ -228,3 +228,188 @@ Route::get('schema/create/product', function () {
         $table->timestamps();
     });
 });
+
+
+// query select all
+Route::get('query/select-all', function () {
+    $data = DB::table('chiennguyen')->get();
+
+    foreach ($data as $d) {
+        echo "<pre>";
+        print_r($d);
+    }
+});
+
+// select column
+Route::get('query/select-column', function () {
+    $data = DB::table('chiennguyen')->select('hoten')->get();
+
+    echo "<pre>";
+    print_r($data);
+});
+
+Route::get('query/order-by', function () {
+    $data = DB::table('chiennguyen')->select('hoten')->orderBy('id', 'DESC')->get();
+
+    echo "<pre>";
+    print_r($data);
+});
+
+Route::get('query/limit', function () {
+    // skip: offset
+    // take: limit
+
+    $data = DB::table('chiennguyen')->skip(2)->take(2)->get(); // =>offset = 2, limit = 2
+
+    echo "<pre>";
+    print_r($data);
+});
+
+
+// get id >= 2 and <=4
+Route::get('query/between', function () {
+    $data = DB::table('chiennguyen')->whereBetween('id', [2, 4])->get();
+
+    echo "<pre>";
+    print_r($data);
+});
+
+
+// get id id < 2 and id > 4
+Route::get('query/not-between', function () {
+    $data = DB::table('chiennguyen')->whereNotBetween('id', [2, 4])->get();
+
+    echo "<pre>";
+    print_r($data);
+});
+
+
+// where in
+Route::get('query/where-in', function () {
+    $data = DB::table('chiennguyen')->whereIn('id', [1, 2, 10])->get();
+
+    echo "<pre>";
+    print_r($data);
+});
+
+// where not in
+Route::get('query/where-not-in', function () {
+    $data = DB::table('chiennguyen')->whereNotIn('id', [1, 2, 10])->get();
+
+    echo "<pre>";
+    print_r($data);
+});
+
+
+//dem so luong record
+Route::get('query/count', function () {
+    $data = DB::table('chiennguyen')->count();
+
+    echo $data;
+});
+
+
+// get max column
+Route::get('query/max', function () {
+    $data = DB::table('chiennguyen')->max('sodienthoai');
+
+    echo $data;
+});
+
+// get min column
+Route::get('query/min', function () {
+    $data = DB::table('chiennguyen')->min('sodienthoai');
+
+    echo $data;
+});
+
+
+// get avg column
+Route::get('query/avg', function () {
+    $data = DB::table('chiennguyen')->avg('id');
+
+    echo $data;
+});
+
+
+// get sum column
+Route::get('query/sum', function () {
+    $data = DB::table('chiennguyen')->sum('id');
+
+    echo $data;
+});
+
+
+// relation
+Route::get('schema/create/cate', function () {
+    Schema::create('cate_news', function ($table) {
+        $table->increments('id');
+        $table->string('name');
+        $table->timestamps();
+    });
+});
+
+
+Route::get('schema/create/news', function () {
+    Schema::create('news', function ($table) {
+        $table->increments('id');
+        $table->string('title');
+        $table->string('intro');
+        $table->integer('cate_id')->unsigned();
+        $table->timestamps();
+    });
+});
+
+// join 2 table
+Route::get('query/join', function () {
+    $data = DB::table('news')->join('cate_news', 'cate_news.id', '=', 'news.cate_id')->get();
+
+    echo "<pre>";
+    print_r($data);
+});
+
+// insert record to table
+Route::get('query/insert', function () {
+    DB::table('news')->insert([
+        'title'   => 'title insert',
+        'intro'   => 'intro insert',
+        'cate_id' => 2
+    ]);
+
+    return 'Insert successly';
+});
+
+// insert multi data
+Route::get('query/insert-multi', function () {
+    DB::table('news')->insert([
+        [
+            'title'   => 'title insert',
+            'intro'   => 'intro insert',
+            'cate_id' => 2
+        ],
+        [
+            'title'   => 'title insert1',
+            'intro'   => 'intro insert2',
+            'cate_id' => 2
+        ],
+        [
+            'title'   => 'title insert2',
+            'intro'   => 'intro insert2',
+            'cate_id' => 2
+        ],
+    ]);
+
+    return 'Insert successly';
+});
+
+// get last Id insert
+Route::get('query/insert-get-id', function () {
+    $id = DB::table('news')->insertGetId([
+        'title'   => 'last title',
+        'intro'   => 'last intro',
+        'cate_id' => 3
+    ]);
+
+    echo $id;
+});
+
