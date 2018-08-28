@@ -410,6 +410,5 @@ Route::get('query/insert-get-id', function () {
         'cate_id' => 3
     ]);
 
-    echo $id;
+    echo 'asdasdasdasdasdasdasdasdasdasdasdasdasdas';
 });
-
